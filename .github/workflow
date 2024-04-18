@@ -30,16 +30,16 @@ jobs:
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: trueimpact-stage
+          ECR_REPOSITORY: test
           IMAGE_TAG: ${{ github.sha }}
-		  ECS_TASK_DEFINITION: .ecs/task-definition.json
+		  ECS_TASK_DEFINITION: .templates/ecs/dev_app.json.tpl
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
       - name: Download task definition
         run: |
-          aws ecs describe-task-definition --task-definition stage-api --query taskDefinition > task-definition.json
+          aws ecs describe-task-definition --task-definition dev-app-task --query taskDefinition > task-definition.json
           echo "${{ steps.build-image.outputs.image }}"
           echo "Task done"
       - name: Fill in the new image ID in the Amazon ECS task definition
@@ -47,7 +47,7 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: ${{ env.ECS_TASK_DEFINITION }}
-          container-name: stage-api
+          container-name: dev-app
           image: ${{ steps.build-image.outputs.image }}
 
       - name: Deploy Amazon ECS task definition
