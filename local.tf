@@ -1,0 +1,1 @@
+# ecsTaskExecutionRole_arn  = data.terraform_remote_state.ecs.outputs.ecsTaskExecutionRole_arn
