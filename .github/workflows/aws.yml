@@ -10,7 +10,7 @@ on:
 jobs:
   deploy-stage-ecs:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/signiance-true-impact-stage-changes'
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
